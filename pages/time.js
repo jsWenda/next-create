@@ -1,4 +1,7 @@
 import React, {useState} from 'react'
+import dynamic from 'next/dynamic'
+
+const One = dynamic(import('../components/one'))
 
 function Time(){
 
@@ -10,6 +13,7 @@ function Time(){
     }
     return (
         <>
+            <One />
             <div>显示时间为:{nowTime}</div>
             <div><button onClick={changeTime}>改变时间格式</button></div>
         </>
