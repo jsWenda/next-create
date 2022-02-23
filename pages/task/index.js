@@ -1,20 +1,30 @@
-import React from "react";
+import React,{useEffect, useState} from "react";
 import useSWR from "swr";
-import { List,message } from "antd"
+import { Button, List,message } from "antd"
 import axios from 'axios';
-import Add from '../../components/add'
 import {
     DeleteOutlined,
   } from '@ant-design/icons';
+import Router from 'next/router'
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 function TaskListPage() {
-    const { data, error } = useSWR("/api/task", fetcher);
+    const [tasks,setTasks] =useState([]);
 
-    if (error) return "An error has occurred.";
-    if (!data) return "Loading...";
-    const tasks = data.data || [];
+    useEffect(()=>{
+        axios.get('/api/task')
+        .then(function (response) {
+            setTasks(response.data.data)
+        })
+        .catch(function (error) {
+            console.log(error)
+        });
+    },[])
+
+    function addTask(){
+        Router.push('/task/add');
+    }
 
     function deleteTask(id){
         axios.delete('/api/task', {
@@ -31,10 +41,10 @@ function TaskListPage() {
 
     return (
         <>
-            <Add />
             <div style={{ 'width': '600px', margin: '0 auto' }}>
+                <Button onClick={addTask}>新增</Button>
                 <List
-                    header={<div>最新任务信息</div>}
+                    header={<div>最新任务信息列表</div>}
                     bordered
                     dataSource={tasks}
                     renderItem={item => (

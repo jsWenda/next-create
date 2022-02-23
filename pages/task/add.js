@@ -1,6 +1,7 @@
 import { Form, Input, Button, message } from 'antd';
 import Styles from './add.module.css'
 import axios from 'axios';
+import Router from 'next/router'
 
 function Add() {
     const onFinish = (values) => {
@@ -8,6 +9,7 @@ function Add() {
         axios.post('/api/task', values)
             .then(function (response) {
                 message.success(response.data.message);
+                Router.push('/task');
             })
             .catch(function (error) {
                 console.log(error)
@@ -18,6 +20,10 @@ function Add() {
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
+
+    function cancelAdd(){
+        Router.push('/task');
+    }
 
     return (
         <div className={Styles.form}>
@@ -68,6 +74,10 @@ function Add() {
                 >
                     <Button type="primary" htmlType="submit">
                         新增
+                    </Button>
+                    &nbsp;&nbsp;&nbsp;
+                    <Button onClick={cancelAdd}>
+                        取消
                     </Button>
                 </Form.Item>
             </Form>
