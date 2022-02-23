@@ -1,37 +1,38 @@
-import React,{useEffect, useState} from "react";
-import useSWR from "swr";
-import { Button, List,message } from "antd"
+import React, { useEffect, useState } from "react";
+import { Button, List, message } from "antd"
 import axios from 'axios';
-import {
-    DeleteOutlined,
-  } from '@ant-design/icons';
 import Router from 'next/router'
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 function TaskListPage() {
-    const [tasks,setTasks] =useState([]);
+    const [tasks, setTasks] = useState([]);
 
-    useEffect(()=>{
+    useEffect(() => {
+        getTask();
+    }, [])
+
+    function getTask() {
         axios.get('/api/task')
-        .then(function (response) {
-            setTasks(response.data.data)
-        })
-        .catch(function (error) {
-            console.log(error)
-        });
-    },[])
+            .then(function (response) {
+                setTasks(response.data.data)
+            })
+            .catch(function (error) {
+                console.log(error)
+            });
+    }
 
-    function addTask(){
+    function addTask() {
         Router.push('/task/add');
     }
 
-    function deleteTask(id){
+    function deleteTask(id) {
         axios.delete('/api/task', {
             data: { id }
-            })
+        })
             .then(function (response) {
                 message.success(response.data.message);
+                getTask()
             })
             .catch(function (error) {
                 console.log(error)
@@ -50,9 +51,14 @@ function TaskListPage() {
                     renderItem={item => (
                         <List.Item>
                             <div>
-                             <span onClick={()=>{
-                                 deleteTask(item.id)
-                             }}><DeleteOutlined /></span> <span>任务名称:{item.title} 任务详情:{item.desc}</span>
+                                <span style={{ 'width': '400px', display: 'inline-block' }}>任务名称:{item.title}</span>
+                                <Button onClick={() => {
+                                    deleteTask(item.id)
+                                }}>删除</Button>
+                                &nbsp;&nbsp;&nbsp;
+                                <Button onClick={() => {
+                                    Router.push(`/task/${item.id}`);
+                                }}>查看</Button>
                             </div>
                         </List.Item>
                     )}

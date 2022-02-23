@@ -6,7 +6,7 @@ function getFilePath(fileName){
    return path.join(process.cwd(),'data',fileName);
 }
 
-function readJson(fileName){
+export function readJson(fileName){
    const filePath = getFilePath(fileName);
    const fileData = fs.readFileSync(filePath);
    const data = JSON.parse(fileData);
@@ -30,7 +30,7 @@ function handle(req,res){
     } else if(req.method === 'POST'){
         // 增加
         let taskObj = req.body;
-        taskObj.id = new Date().getTime();
+        taskObj.id = new Date().getTime().toString();
         data.push(taskObj);
         wirteJson(fileName,sortBy(data, 'id'));
         res.status(status).json({ taskObj, message });
